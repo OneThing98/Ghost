@@ -1,5 +1,5 @@
 build:
-	go build -o bin/docker-mocker ./cmd/docker-mocker/
+	go build -o bin/ghost ./cmd/ghost/
 
 run:
 	sudo ./bin/docker-mocker run /bin/sh

@@ -1,0 +1,33 @@
+linters-settings:
+  govet:
+    shadow: true
+
+run:
+  timeout: 5m
+  enable:
+    - govet
+    - gosimple
+    - staticcheck
+    - deadcode
+    - structcheck
+    - typecheck
+    - unused
+    - ineffassign
+    - errcheck
+    - gocyclo
+    - misspell
+    - unconvert
+    - goconst
+    - gocritic
+    - dupl
+    - maligned
+  disable:
+    - megacheck
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+  exclude-dirs:
+    - vendor

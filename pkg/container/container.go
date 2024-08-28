@@ -37,4 +37,22 @@ type Capability string
 
 type Capabilities []Capability
 
-//need to implement // Methods to check if a namespace or capability is contained within their respective slices.
+//methods to check if a namespace or capability is contained inside their respective slices.
+
+func (n Namespaces) Container(ns Namespace) bool {
+	for _, nns := range n {
+		if nns == ns {
+			return true
+		}
+	}
+	return false
+}
+
+func (c Capabilities) Container(cc Capability) bool {
+	for _, ccs := range c {
+		if ccs == cc {
+			return true
+		}
+	}
+	return false
+}

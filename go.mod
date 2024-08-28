@@ -1,5 +1,8 @@
 module github.com/OneThing98/Ghost
 
-go 1.22.5
+go 1.22.6
 
-require golang.org/x/sys v0.24.0 // indirect
+require (
+	github.com/OneThing98/containerpkg v0.0.0-20240828054228-bc4653df4ad0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
+)

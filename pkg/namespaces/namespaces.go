@@ -1,9 +1,9 @@
 package namespaces
 
 import (
-	"file/filepath"
 	"fmt"
 	"os"
+	"path/filepath"
 	"syscall"
 
 	"golang.org/x/sys/unix"
@@ -39,4 +39,7 @@ func CreateNewNamespace(namespace string, bindTo string) error {
 	return err
 }
 
-//To do: join existing namespace
+func joinExistingNamespace(fd uintptr, namespace string) error {
+	flag := namespaceMap[namespace]
+	return setns(fd, uintptr(flag))
+}

@@ -1,3 +1,5 @@
+github.com/OneThing98/capability v0.0.0-20240828235037-294dec2f681a h1:Sy3C6gHRiV6w4uGR61+kgxPafW3aA8A3U3gMswbzVY0=
+github.com/OneThing98/capability v0.0.0-20240828235037-294dec2f681a/go.mod h1:SuMSYk2fOPyDDj4dGE8lzrv6Pi/64TjeUywoFHlKGz4=
 github.com/OneThing98/containerpkg v0.0.0-20240828054228-bc4653df4ad0 h1:yr9/wyxS7HNbLyaEqKd2eTPCdkGmXP/ch9W2+POjaVY=
 github.com/OneThing98/containerpkg v0.0.0-20240828054228-bc4653df4ad0/go.mod h1:cM/r0u4nmwTw/cglwHjEoVPEdt3cHxrz8peFLg7I9vw=
 golang.org/x/sys v0.24.0 h1:Twjiwq9dn6R1fQcyiK+wQyHWfaz/BJB+YIpzU/Cv3Xg=

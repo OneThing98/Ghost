@@ -168,3 +168,34 @@ func closefd(fd uintptr) error {
 func dup2(fd1, fd2 uintptr) error {
 	return unix.Dup2(int(fd1), int(fd2))
 }
+
+// creates a file system node
+func mknod(path string, mode uint32, dev int) error {
+	return unix.Mknod(path, mode, dev)
+}
+
+// sets the parent process death signal for the calling process
+func parentDeathSignal() error {
+	if _, _, err := unix.Syscall6(unix.SYS_PRCTL, unix.PR_SET_PDEATHSIG, uintptr(unix.SIGKILL), 0, 0, 0, 0); err != 0 {
+		return fmt.Errorf("prctl failed: %v", err)
+	}
+	return nil
+}
+
+// sets the controlling terminal for the calling process
+func setctty() error {
+	if _, _, err := unix.Syscall(unix.SYS_IOCTL, 0, uintptr(unix.TIOCSCTTY), 0); err != 0 {
+		return fmt.Errorf("ioctl failed: %v", err)
+	}
+	return nil
+}
+
+// mkfifo creates a named pipe special file
+func mkfifo(name string, mode uint32) error {
+	return unix.Mkfifo(name, mode)
+}
+
+// umask sets the file mode creating mask
+func umask(mask int) int {
+	return unix.Umask(mask)
+}

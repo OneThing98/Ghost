@@ -1,5 +1,9 @@
 package namespaces
 
+import (
+	container "github.com/OneThing98/containerpkg"
+)
+
 const (
 	CLONE_NEWNS   = 0x00020000 // new mount namespace
 	CLONE_NEWUTS  = 0x04000000 // new UTS namespace
@@ -9,7 +13,7 @@ const (
 	CLONE_NEWNET  = 0x40000000 // new network namespace
 )
 
-var namespaceMap = map[string]int{
+var namespaceMap = map[container.Namespace]int{
 	"mnt":  CLONE_NEWNS,
 	"uts":  CLONE_NEWUTS,
 	"ipc":  CLONE_NEWIPC,
@@ -19,7 +23,7 @@ var namespaceMap = map[string]int{
 }
 
 // /proc file system file names corresponding to the namespaces.
-var namespaceFileMap = map[string]string{
+var namespaceFileMap = map[container.Namespace]string{
 	"mnt":  "mnt",
 	"uts":  "uts",
 	"ipc":  "ipc",

@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"syscall"
 
+	container "github.com/OneThing98/containerpkg"
+
 	"golang.org/x/sys/unix"
 )
 
@@ -15,7 +17,7 @@ func SetupNamespaces() *syscall.SysProcAttr {
 	}
 }
 
-func CreateNewNamespace(namespace string, bindTo string) error {
+func CreateNewNamespace(namespace container.Namespace, bindTo string) error {
 	flag := namespaceMap[namespace]
 	name := namespaceFileMap[namespace]
 	nspath := filepath.Join("/proc/self/ns", name)
@@ -39,7 +41,7 @@ func CreateNewNamespace(namespace string, bindTo string) error {
 	return err
 }
 
-func joinExistingNamespace(fd uintptr, namespace string) error {
+func joinExistingNamespace(fd uintptr, namespace container.Namespace) error {
 	flag := namespaceMap[namespace]
 	return setns(fd, uintptr(flag))
 }

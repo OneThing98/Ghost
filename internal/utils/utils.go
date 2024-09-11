@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -43,4 +46,28 @@ func logError(format string, args ...interface{}) error {
 	err := fmt.Errorf(format, args...)
 	log.Print(err)
 	return err
+}
+
+func WaitOnPid(pid int) (exitcode int, err error) {
+	child, err := os.FindProcess(pid)
+	if err != nil {
+		return -1, err
+	}
+	state, err := child.Wait()
+	if err != nil {
+		return -1, err
+	}
+	return getExitCode(state), nil
+}
+
+func getExitCode(state *os.ProcessState) int {
+	return state.Sys().(syscall.WaitStatus).ExitStatus()
+}
+
+func GenerateRandomName(size int) (string, error) {
+	id := make([]byte, size)
+	if _, err := io.ReadFull(rand.Reader, id); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(id), nil
 }

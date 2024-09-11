@@ -41,6 +41,12 @@ func CreateNewNamespace(namespace container.Namespace, bindTo string) error {
 	return err
 }
 
+func getNamespaceFlags(namespaces container.Namespaces) (flag int) {
+	for _, ns := range namespaces {
+		flag |= namespaceMap[ns]
+	}
+	return
+}
 func joinExistingNamespace(fd uintptr, namespace container.Namespace) error {
 	flag := namespaceMap[namespace]
 	return setns(fd, uintptr(flag))

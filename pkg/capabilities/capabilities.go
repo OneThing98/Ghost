@@ -5,9 +5,10 @@ import (
 	"os"
 
 	"github.com/OneThing98/capability"
+	container "github.com/OneThing98/containerpkg"
 )
 
-var CapabilityMap = map[string]capability.Cap{
+var CapabilityMap = map[container.Capability]capability.Cap{
 	"CAP_SETPCAP":        capability.CAP_SETPCAP,
 	"CAP_SYS_MODULE":     capability.CAP_SYS_MODULE,
 	"CAP_SYS_RAWIO":      capability.CAP_SYS_RAWIO,
@@ -24,8 +25,8 @@ var CapabilityMap = map[string]capability.Cap{
 	"CAP_MAC_ADMIN":      capability.CAP_MAC_ADMIN,
 }
 
-func DropCapabilities(capNames []string) error {
-	caps, err := getCapabilities(capNames)
+func DropCapabilities(container *container.Container) error {
+	caps, err := getCapabilities(container)
 
 	if err != nil {
 		return err
@@ -45,10 +46,10 @@ func DropCapabilities(capNames []string) error {
 	return nil
 }
 
-func getCapabilities(capNames []string) ([]capability.Cap, error) {
+func getCapabilities(container *container.Container) ([]capability.Cap, error) {
 	var caps []capability.Cap
 
-	for _, name := range capNames {
+	for _, name := range container.Capabilities {
 		if cap, ok := CapabilityMap[name]; ok {
 			caps = append(caps, cap)
 		} else {

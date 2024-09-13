@@ -25,7 +25,7 @@ var (
 
 // spawns new namespaces and runs the specified containerized process.
 func containerExec(container *container.Container) (pid int, err error) {
-	if container.NetNsFd > 0 && container.Namespaces.Container("CLONE_NEWNET") {
+	if container.NetNsFd > 0 && container.Namespaces.Contains("CLONE_NEWNET") {
 		return -1, ErrExistingNetworkNamespace
 	}
 
@@ -127,7 +127,7 @@ func containerExec(container *container.Container) (pid int, err error) {
 
 // spawns a new command inside an existing container's namespace
 func containerExecIn(container *container.Container, cmd *container.Command) (int, error) {
-	if container.NSPid <= 0 {
+	if container.NsPid <= 0 {
 		return -1, errors.New("invalid container PID")
 	}
 
@@ -162,8 +162,8 @@ func containerExecIn(container *container.Container, cmd *container.Command) (in
 		}
 
 		//handle remounting proc and sys
-		if container.Namespaces.Container("CLONE_NEWNS") &&
-			container.Namespaces.Container("CLONE_NEWPID") {
+		if container.Namespaces.Contains("CLONE_NEWNS") &&
+			container.Namespaces.Contains("CLONE_NEWPID") {
 			child, err := fork()
 			if err != nil {
 				writeError("fork child: %v", err)

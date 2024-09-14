@@ -33,7 +33,7 @@ func exec(container *container.Container) error {
 		}
 		container.NetNsFd = netFile.Fd()
 	}
-
+	pid, err := namespaces.containerExec()
 }
 
 // func main() {

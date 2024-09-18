@@ -39,7 +39,7 @@ type Capabilities []Capability
 
 //methods to check if a namespace or capability is contained inside their respective slices.
 
-func (n Namespaces) Container(ns Namespace) bool {
+func (n Namespaces) Contains(ns Namespace) bool {
 	for _, nns := range n {
 		if nns == ns {
 			return true
@@ -48,7 +48,7 @@ func (n Namespaces) Container(ns Namespace) bool {
 	return false
 }
 
-func (c Capabilities) Container(cc Capability) bool {
+func (c Capabilities) Contains(cc Capability) bool {
 	for _, ccs := range c {
 		if ccs == cc {
 			return true

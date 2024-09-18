@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/OneThing98/Ghost/pkg/capabilities"
+	"github.com/OneThing98/capabilities"
 	container "github.com/OneThing98/containerpkg"
 	"github.com/OneThing98/utils"
 

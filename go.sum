@@ -4,8 +4,8 @@ github.com/OneThing98/capability v0.0.0-20240828235037-294dec2f681a h1:Sy3C6gHRi
 github.com/OneThing98/capability v0.0.0-20240828235037-294dec2f681a/go.mod h1:SuMSYk2fOPyDDj4dGE8lzrv6Pi/64TjeUywoFHlKGz4=
 github.com/OneThing98/containerpkg v0.0.0-20240913104539-60198290334d h1:jKxR8ckxqzkQ9WSfkAC2WMajqQQJCxNZ345YqvgX0Cs=
 github.com/OneThing98/containerpkg v0.0.0-20240913104539-60198290334d/go.mod h1:cM/r0u4nmwTw/cglwHjEoVPEdt3cHxrz8peFLg7I9vw=
-github.com/OneThing98/namespaces v0.0.0-20240912111536-af33fdc857f7 h1:Y5Q2Vm5wWm4EdU4fDMGmvYp8KWDJWHYUQTlvvVDOzk8=
-github.com/OneThing98/namespaces v0.0.0-20240912111536-af33fdc857f7/go.mod h1:bT5EDTqWcnVsOVEsjWOVtIHuXm5h4UQwGEV3nGPBqWM=
+github.com/OneThing98/namespaces v0.0.0-20240918073508-527cec8c73bd h1:TaymGoSYoRlDpVF/4yR6jPfhdfwLZo4QdTJ6lWCqLRE=
+github.com/OneThing98/namespaces v0.0.0-20240918073508-527cec8c73bd/go.mod h1:bT5EDTqWcnVsOVEsjWOVtIHuXm5h4UQwGEV3nGPBqWM=
 github.com/OneThing98/netlink v0.0.0-20240912092553-39c4cde65c17 h1:DZyUwjeSnSl853s33LXrDwr08OUo0C0KIh2Hf4NhxfM=
 github.com/OneThing98/netlink v0.0.0-20240912092553-39c4cde65c17/go.mod h1:9LIgVPD7sMagrb3vHLb2uSjTDChp1Dn/a+pOIi+01xI=
 github.com/OneThing98/utils v0.0.0-20240911045841-428d32973ab0 h1:rIb89uRdrBkSY4GBURD/4/iL+tSVrJdJqrAd3WYxnDo=

@@ -1,6 +1,6 @@
 {
     "id": "koye",
-    "namespace_pid": 3117,
+    "namespace_pid": 12265,
     "command": {
         "args": [
             "/bin/bash"
@@ -12,8 +12,12 @@
             "TERM=xterm"
         ]
     },
-    "rootfs": "/home/rojin/dev/jammy-base-amd64",
+    "rootfs": "/home/rojin/dev/test",
+    "network": null,
+    "user": "",
+    "working_dir": "",
     "namespaces": [
+        "NEWNET",
         "NEWIPC",
         "NEWNS",
         "NEWPID",

@@ -11,4 +11,4 @@ require (
 	golang.org/x/sys v0.25.0
 )
 
-require github.com/OneThing98/namespaces v0.0.0-20240918073508-527cec8c73bd
+require github.com/OneThing98/namespaces v0.0.0-20240919094802-ab9216e3696f

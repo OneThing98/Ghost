@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/OneThing98/Ghost/internal/utils"
@@ -25,46 +26,52 @@ func init() {
 	flag.Parse()
 }
 
-func exec(container *libcontainer.Container) error {
+func exec(container *libcontainer.Container) (int, error) {
+	log.Println("Starting exec function")
 	var (
 		netFile *os.File
 		err     error
 	)
 	container.NetNsFd = 0
 	if userNet {
+		log.Println("UserNet is enabled, opening network namespace file")
 		netFile, err = os.Open("/root/nsroot/test")
 		if err != nil {
-			return err
+			return 1, fmt.Errorf("failed to open network namespace file: %w", err)
 		}
 		container.NetNsFd = netFile.Fd()
 	}
+	log.Printf("Container Config: %+v\n", container)
 	pid, err := namespaces.ContainerExec(container)
 	if err != nil {
-		return fmt.Errorf("error exec container %s", err)
+		return 1, fmt.Errorf("error executing container: %w", err)
 	}
 	if displayPid {
 		fmt.Println(pid)
 	}
 
+	log.Println("Waiting on the process to complete")
 	exitcode, err := utils.WaitOnPid(pid)
 	if err != nil {
-		return fmt.Errorf("error waiting on child %s", err)
+		return 1, fmt.Errorf("error waiting on child process: %w", err)
 	}
 	fmt.Println(exitcode)
 	if userNet {
+		log.Println("Closing network namespace file and deleting namespace")
 		netFile.Close()
 		if err := network.DeleteNetworkNamespace("/root/nsroot/test"); err != nil {
-			return err
+			return 1, fmt.Errorf("failed to delete network namespace: %w", err)
 		}
 	}
-	os.Exit(exitcode)
-	return nil
+	log.Printf("Exiting with code: %d", exitcode)
+	return exitcode, nil
 }
 
-func execIn(container *libcontainer.Container) error {
+func execIn(container *libcontainer.Container) (int, error) {
+	log.Println("Starting execIn function")
 	f, err := os.Open("/root/nsroot/test")
 	if err != nil {
-		return nil
+		return 1, fmt.Errorf("failed to open network namespace file: %w", err)
 	}
 	container.NetNsFd = f.Fd()
 	pid, err := namespaces.ContainerExecIn(container, &libcontainer.Command{
@@ -74,79 +81,90 @@ func execIn(container *libcontainer.Container) error {
 		},
 	})
 	if err != nil {
-		return fmt.Errorf("error execin container %s", err)
+		return 1, fmt.Errorf("error executing in container: %w", err)
 	}
+	log.Println("Waiting on the process to complete")
 	exitcode, err := utils.WaitOnPid(pid)
 	if err != nil {
-		return fmt.Errorf("error waiting on child %s", err)
+		return 1, fmt.Errorf("error waiting on child process: %w", err)
 	}
-	os.Exit(exitcode)
-	return nil
+	log.Printf("Exiting with code: %d", exitcode)
+	return exitcode, nil
 }
 
-func createNet(config *libcontainer.Network) error {
+func createNet(config *libcontainer.Network) (int, error) {
+	log.Println("Starting createNet function")
 	root := "/root/nsroot"
 	if err := network.SetupNamespaceMountDir(root); err != nil {
-		return err
+		return 1, fmt.Errorf("failed to set up namespace mount directory: %w", err)
 	}
 	nspath := root + "/test"
 	if err := network.CreateNetworkNamespace(nspath); err != nil {
-		return nil
+		return 1, fmt.Errorf("failed to create network namespace: %w", err)
 	}
+	log.Println("Network namespace created, setting up veth pair")
 	if err := network.CreateVethPair("veth0", config.TempVethName); err != nil {
-		return err
+		return 1, fmt.Errorf("failed to create veth pair: %w", err)
 	}
 	if err := network.SetInterfaceMaster("veth0", config.Bridge); err != nil {
-		return err
+		return 1, fmt.Errorf("failed to set interface master: %w", err)
 	}
 	if err := network.InterfaceUp("veth0"); err != nil {
-		return err
+		return 1, fmt.Errorf("failed to bring interface up: %w", err)
 	}
 
+	log.Println("Opening network namespace path")
 	f, err := os.Open(nspath)
 	if err != nil {
-		return err
+		return 1, fmt.Errorf("failed to open namespace path: %w", err)
 	}
 	defer f.Close()
 	if err := network.SetInterfaceInNamespaceFd("veth1", int(f.Fd())); err != nil {
-		return err
+		return 1, fmt.Errorf("failed to set interface in namespace: %w", err)
 	}
-	return nil
+	log.Println("Network namespace setup complete")
+	return 0, nil
 }
 
 func printErr(err error) {
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error:", err)
+		log.Printf("Error: %v", err)
 	}
-	os.Exit(1)
 }
 
 func main() {
 	var (
-		err    error
-		cliCmd = flag.Arg(0)
-		config = flag.Arg(1)
+		err      error
+		cliCmd   = flag.Arg(0)
+		config   = flag.Arg(1)
+		exitCode int
 	)
 
+	log.Println("Opening container configuration file")
 	f, err := os.Open(config)
 	if err != nil {
-		printErr(err)
+		printErr(fmt.Errorf("failed to open container configuration file: %w", err))
+		os.Exit(1)
 	}
 
+	log.Println("Decoding container configuration")
 	dec := json.NewDecoder(f)
 	var container *libcontainer.Container
 
 	if err := dec.Decode(&container); err != nil {
-		printErr(nil)
+		printErr(fmt.Errorf("failed to decode container configuration: %w", err))
+		os.Exit(1)
 	}
 	f.Close()
+
+	log.Printf("Command received: %s", cliCmd)
 	switch cliCmd {
 	case "exec":
-		err = exec(container)
+		exitCode, err = exec(container)
 	case "execin":
-		err = execIn(container)
+		exitCode, err = execIn(container)
 	case "net":
-		err = createNet(&libcontainer.Network{
+		exitCode, err = createNet(&libcontainer.Network{
 			TempVethName: "veth1",
 			IP:           "172.17.0.100/16",
 			Gateway:      "172.17.42.1",
@@ -155,23 +173,13 @@ func main() {
 		})
 	default:
 		err = fmt.Errorf("command not supported: %s", cliCmd)
+		exitCode = 1
 	}
+
 	if err != nil {
 		printErr(err)
 	}
+
+	log.Printf("Exiting with code: %d", exitCode)
+	os.Exit(exitCode)
 }
-
-// func main() {
-//     if len(os.Args) < 3 {
-//         log.Fatal("Usage: run <command> or child <command>")
-//     }
-
-//     runner, err := container.NewContainerRunner(os.Args[1])
-//     if err != nil {
-//         log.Fatalf("Error creating container runner: %v", err)
-//     }
-
-//     if err := runner.Run(os.Args[2:]); err != nil {
-//         log.Fatalf("Error running command: %v", err)
-//     }
-// }
